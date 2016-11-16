@@ -1,0 +1,44 @@
+export BASH_LOCAL_DIR=$HOME/config/bash
+
+alias t=tmux
+
+alias rebash="source $HOME/.bashrc"
+alias emacs='emacs -nw'
+
+alias cdd="cd .."
+alias cddd="cd ../.."
+alias cdddd="cd ../../.."
+alias cddddd="cd ../../../.."
+alias cdddddd="cd ../../../../.."
+
+export EDITOR=vim
+
+# use vim keybindings for bash shell
+#set -o vi
+
+function parse_git_branch_and_add_brackets {
+      git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\ \[\1\]/'
+}
+
+PS1="\n\[\033[32m\][\w]\[\033[0m\]\n\[\033[1;36m\]\u@\[\033[32m\]\h\[\033[1;33m\]\$(parse_git_branch_and_add_brackets)-> \[\033[0m\]"
+
+export PATH=$HOME/config/scripts:$PATH
+
+# use vim keybindings in bash
+# set -o vi
+
+# if this variable isn't set properly, tmux won't use 256 colors
+[ -z "$TMUX" ] && export TERM=xterm-256color
+
+# if available, use the version of vim from vim-nox package, since it is compiled
+# with ruby support, which is needed for command-t
+VIM_NOX=/usr/bin/vim.nox
+if [ -f ${VIM_NOX} ]; then
+    alias vim=${VIM_NOX}
+fi;
+
+# useful functions (should move these into more specific files)
+source ${BASH_LOCAL_DIR}/funcs.sh
+
+git config --global credential.helper cache
+git config --global credential.helper 'cache --timeout=7200'
